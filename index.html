@@ -1,0 +1,889 @@
+<!doctype html>
+<html lang="id">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Fireworks × UI Art War</title>
+
+  <style>
+    :root{
+      /* -------- Palette (white + warm paper + greenish-yellow) -------- */
+      --bg:#fbfbf7;                 /* warm white */
+      --paper:#ffffff;              /* pure card */
+      --paper2:#f6f3ea;             /* slightly warm beige */
+      --ink:#1f2328;                /* near-black */
+      --muted:#6c737c;              /* soft gray */
+      --line: rgba(31,35,40,.10);   /* thin border */
+      --shadow: 0 18px 55px rgba(31,35,40,.08);
+
+      --accent:#c9ff2f;             /* greenish-yellow highlight */
+      --accent2:#e8ff9c;            /* softer highlight */
+      --chip:#f2f4f6;               /* neutral chip bg */
+      --ok:#1a7f37;                 /* decided */
+      --warn:#9a6700;               /* guess */
+      --radius:18px;
+    }
+
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial;
+      background:
+        radial-gradient(900px 500px at 18% 12%, rgba(201,255,47,.22), transparent 55%),
+        radial-gradient(900px 520px at 78% 18%, rgba(201,255,47,.16), transparent 60%),
+        var(--bg);
+      color:var(--ink);
+    }
+
+    header{
+      max-width:1100px;
+      margin:0 auto;
+      padding:22px 18px 12px;
+    }
+
+    .topbar{
+      display:flex;
+      align-items:flex-start;
+      justify-content:space-between;
+      gap:12px;
+      flex-wrap:wrap;
+    }
+
+    .brand{
+      display:flex; align-items:center; gap:10px;
+      font-weight:900;
+      letter-spacing:.2px;
+      font-size:18px;
+    }
+
+    .sub{
+      color:var(--muted);
+      font-size:12px;
+      margin-top:6px;
+      line-height:1.35;
+      max-width:720px;
+    }
+
+    .highlight{
+      background: linear-gradient(90deg, rgba(201,255,47,.55), rgba(201,255,47,.20));
+      padding:0 .35em;
+      border-radius:10px;
+      box-decoration-break: clone;
+      -webkit-box-decoration-break: clone;
+    }
+
+    .tabs{
+      display:flex; gap:10px; flex-wrap:wrap;
+      margin-top:14px;
+    }
+
+    .tab{
+      border:1px solid var(--line);
+      background: rgba(255,255,255,.75);
+      padding:10px 12px;
+      border-radius:999px;
+      cursor:pointer;
+      color:var(--ink);
+      font-weight:900;
+      user-select:none;
+      box-shadow: 0 10px 30px rgba(31,35,40,.05);
+    }
+
+    .tab.active{
+      border-color: rgba(31,35,40,.18);
+      background:
+        linear-gradient(0deg, rgba(201,255,47,.26), rgba(201,255,47,.26)),
+        rgba(255,255,255,.90);
+    }
+
+    main{
+      max-width:1100px;
+      margin:0 auto;
+      padding:0 18px 40px;
+    }
+
+    .card{
+      border:1px solid var(--line);
+      background: rgba(255,255,255,.85);
+      border-radius: var(--radius);
+      padding:14px;
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(8px);
+    }
+
+    .panel{
+      display:flex;
+      justify-content:space-between;
+      align-items:flex-start;
+      gap:12px;
+      flex-wrap:wrap;
+    }
+
+    .panel h2{
+      margin:0;
+      font-size:16px;
+      font-weight:900;
+    }
+
+    .hint{
+      margin-top:6px;
+      color:var(--muted);
+      font-size:12px;
+      line-height:1.35;
+    }
+
+    .btn{
+      border:1px solid var(--line);
+      background: rgba(255,255,255,.90);
+      color:var(--ink);
+      padding:10px 12px;
+      border-radius:12px;
+      cursor:pointer;
+      font-weight:900;
+      box-shadow: 0 10px 30px rgba(31,35,40,.06);
+    }
+
+    .btn.danger{
+      border-color: rgba(31,35,40,.18);
+      background:
+        linear-gradient(0deg, rgba(201,255,47,.22), rgba(201,255,47,.22)),
+        rgba(255,255,255,.92);
+    }
+
+    .btn:disabled{opacity:.55; cursor:not-allowed;}
+
+    .grid{
+      display:grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap:14px;
+      margin-top:16px;
+    }
+
+    /* Cast Card */
+    .cast{
+      cursor:pointer;
+      transition: transform .12s ease, box-shadow .12s ease, border-color .12s ease;
+      min-height:186px;
+      position:relative;
+      overflow:hidden;
+      background:
+        radial-gradient(600px 260px at 15% 0%, rgba(201,255,47,.16), transparent 60%),
+        rgba(255,255,255,.86);
+    }
+
+    .cast:hover{
+      transform: translateY(-2px);
+      box-shadow: 0 22px 70px rgba(31,35,40,.12);
+      border-color: rgba(31,35,40,.18);
+    }
+
+    .cast-top{
+      display:flex;
+      justify-content:space-between;
+      align-items:flex-start;
+      gap:10px;
+    }
+
+    .name{
+      font-size:18px;
+      font-weight:950;
+      line-height:1.15;
+      letter-spacing:-.2px;
+    }
+
+    .status{
+      font-size:12px;
+      font-weight:950;
+      letter-spacing:.4px;
+      padding:6px 10px;
+      border-radius:999px;
+      border:1px solid var(--line);
+      background: rgba(255,255,255,.75);
+    }
+
+    .status.guess{ color: var(--warn); }
+    .status.decided{ color: var(--ok); }
+
+    .avatar{
+      margin-top:12px;
+      width:100%;
+      height:120px;
+      border-radius: 14px;
+      border:1px solid rgba(31,35,40,.10);
+      background: linear-gradient(0deg, rgba(246,243,234,.8), rgba(246,243,234,.8));
+      overflow:hidden;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      position:relative;
+    }
+
+    /* subtle “paper” grain */
+    .avatar:after{
+      content:"";
+      position:absolute; inset:0;
+      background-image: radial-gradient(rgba(31,35,40,.05) 1px, transparent 1px);
+      background-size: 14px 14px;
+      opacity:.12;
+      pointer-events:none;
+    }
+
+    .avatar img{
+      width:100%;
+      height:100%;
+      object-fit:cover;
+      display:block;
+      filter: contrast(1.03) saturate(1.02);
+    }
+
+    .avatar .fallback{
+      color: rgba(31,35,40,.62);
+      font-weight:900;
+      font-size:12px;
+      padding:10px;
+      text-align:center;
+      position:relative;
+      z-index:1;
+    }
+
+    .pill{
+      margin-top:12px;
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      gap:10px;
+      border:1px solid rgba(31,35,40,.10);
+      border-radius:999px;
+      padding:8px 10px;
+      color:var(--muted);
+      font-size:12px;
+      background: rgba(242,244,246,.72);
+    }
+
+    .pill strong{
+      color:var(--ink);
+      background: linear-gradient(0deg, rgba(201,255,47,.35), rgba(201,255,47,.35));
+      padding: 2px 8px;
+      border-radius: 999px;
+      border: 1px solid rgba(31,35,40,.10);
+    }
+
+    /* Results */
+    .kpi{
+      display:flex; gap:10px; flex-wrap:wrap;
+      margin-top:16px;
+    }
+    .kpi .card{flex: 1 1 240px;}
+    .kpi .big{font-size:26px; font-weight:950; letter-spacing:-.4px;}
+
+    .two{
+      display:grid;
+      grid-template-columns: 1.1fr .9fr;
+      gap:14px;
+      margin-top:16px;
+    }
+    @media (max-width: 900px){
+      .two{grid-template-columns:1fr;}
+    }
+
+    .barlist{margin-top:16px; display:flex; flex-direction:column; gap:10px;}
+
+    .bar{
+      border:1px solid var(--line);
+      border-radius:14px;
+      padding:10px 12px;
+      background: rgba(255,255,255,.85);
+      box-shadow: 0 12px 40px rgba(31,35,40,.06);
+    }
+
+    .bar-top{display:flex; justify-content:space-between; gap:12px; align-items:center;}
+    .bar-top .label{font-weight:950;}
+    .bar-top .val{color:var(--muted); font-size:12px;}
+
+    .track{
+      height:10px;
+      background: rgba(31,35,40,.06);
+      border-radius:999px;
+      overflow:hidden;
+      margin-top:8px;
+    }
+
+    .fill{
+      height:100%;
+      width:0%;
+      background: linear-gradient(90deg, rgba(201,255,47,.95), rgba(201,255,47,.35));
+      border-radius:999px;
+    }
+
+    /* Modal */
+    .modal{
+      position:fixed; inset:0;
+      background:rgba(31,35,40,.42);
+      display:none;
+      align-items:center;
+      justify-content:center;
+      padding:18px;
+      z-index:50;
+    }
+    .modal.open{display:flex;}
+
+    .modal-box{
+      width:min(720px, 100%);
+      border:1px solid rgba(255,255,255,.55);
+      background:
+        radial-gradient(700px 240px at 20% 0%, rgba(201,255,47,.18), transparent 60%),
+        rgba(255,255,255,.92);
+      border-radius:18px;
+      padding:16px;
+      box-shadow: 0 30px 90px rgba(31,35,40,.18);
+    }
+
+    .modal-head{
+      display:flex; justify-content:space-between; align-items:flex-start; gap:12px;
+    }
+
+    .modal-title{
+      font-size:18px;
+      font-weight:950;
+      letter-spacing:-.2px;
+    }
+
+    .choices{
+      display:grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap:10px;
+      margin-top:14px;
+    }
+
+    .choice{
+      border:1px solid rgba(31,35,40,.10);
+      border-radius:14px;
+      padding:12px;
+      cursor:pointer;
+      background: rgba(246,243,234,.75);
+      transition: transform .10s ease, border-color .10s ease, background .10s ease;
+      font-weight:950;
+      color: var(--ink);
+      box-shadow: 0 10px 30px rgba(31,35,40,.05);
+    }
+
+    .choice:hover{
+      transform: translateY(-1px);
+      border-color: rgba(31,35,40,.18);
+      background:
+        linear-gradient(0deg, rgba(201,255,47,.22), rgba(201,255,47,.22)),
+        rgba(246,243,234,.78);
+    }
+
+    .mono{font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;}
+
+    /* Admin */
+    textarea{
+      width:100%;
+      min-height:220px;
+      border-radius:14px;
+      border:1px solid rgba(31,35,40,.12);
+      background: rgba(255,255,255,.92);
+      color:var(--ink);
+      padding:12px;
+      font-size:13px;
+      line-height:1.4;
+      resize:vertical;
+      box-shadow: 0 14px 45px rgba(31,35,40,.06);
+    }
+
+    .note{
+      color:var(--muted);
+      font-size:12px;
+      line-height:1.45;
+      margin-top:10px;
+    }
+
+    footer{
+      max-width:1100px;
+      margin:0 auto;
+      padding:18px;
+      color:var(--muted);
+      font-size:12px;
+    }
+  </style>
+</head>
+
+<body>
+<header>
+  <div class="topbar">
+    <div>
+      <div class="brand">🎆 Fireworks × UI Art War</div>
+      <div class="sub">
+        Tebak kategori lomba yang cocok untuk tiap cast.
+        <span class="highlight">For Fun</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="tabs">
+    <div class="tab active" data-tab="guess">Guess</div>
+    <div class="tab" data-tab="results">Results</div>
+    <div class="tab" data-tab="admin">Admin</div>
+  </div>
+</header>
+
+<main>
+  <!-- GUESS -->
+  <section id="tab-guess">
+    <div class="card">
+      <div class="panel">
+        <div>
+          <h2>Pilih cast → pilih kategori</h2>
+          <div class="hint">Tebakan kamu tersimpan di browser kamu. Kamu bisa reset kapan aja dan kamu bisa screenshot hasilnya.</div>
+        </div>
+        <button class="btn danger" id="resetVotesBtn">Reset my votes</button>
+      </div>
+    </div>
+
+    <div class="grid" id="castGrid"></div>
+  </section>
+
+  <!-- RESULTS -->
+  <section id="tab-results" style="display:none;">
+    <div class="kpi">
+      <div class="card">
+        <div class="hint">Total picks (di device ini)</div>
+        <div class="big" id="kpiTotal">0</div>
+      </div>
+      <div class="card">
+        <div class="hint">Kategori paling sering dipilih</div>
+        <div class="big" id="kpiTop">—</div>
+      </div>
+      <div class="card">
+        <div class="hint">Cast yang sudah dipilih</div>
+        <div class="big" id="kpiCast">—</div>
+      </div>
+    </div>
+
+    <div class="two">
+      <div class="card">
+        <div style="font-weight:950">Popularitas kategori</div>
+        <div class="hint">Berdasarkan picks yang tersimpan di device ini.</div>
+        <div class="barlist" id="barList"></div>
+      </div>
+
+      <div class="card">
+        <div style="font-weight:950">My picks</div>
+        <div class="hint">Ringkasan pilihan kamu per cast.</div>
+        <div id="myPicks"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ADMIN -->
+  <section id="tab-admin" style="display:none;">
+    <div class="card">
+      <div style="font-weight:950; font-size:16px">Edit cast & categories</div>
+      <div class="hint">Paste JSON → Save. Ini nyimpan config di browser kamu (local only).</div>
+      <div class="note">
+        Format minimal:
+        <span class="mono">{"categories":[{"id":"band","name":"Band"}], "cast":[{"id":"yuda","name":"Yuda","img":"images/yuda.jpg"}]}</span>
+      </div>
+    </div>
+
+    <div class="card" style="margin-top:14px;">
+      <textarea id="adminJson"></textarea>
+      <div style="display:flex; gap:10px; flex-wrap:wrap; margin-top:10px;">
+        <button class="btn" id="saveAdminBtn">Save config</button>
+        <button class="btn" id="loadDefaultBtn">Load default</button>
+      </div>
+      <div class="note">
+        Kalau nanti kamu aktifin Google Sheets endpoint, vote bisa di-log saat user pick kategori.
+      </div>
+    </div>
+  </section>
+</main>
+
+<!-- MODAL -->
+<div class="modal" id="modal">
+  <div class="modal-box">
+    <div class="modal-head">
+      <div>
+        <div class="modal-title" id="modalTitle">—</div>
+        <div class="hint" id="modalPick">Current pick: —</div>
+      </div>
+      <button class="btn" id="closeModalBtn">Close</button>
+    </div>
+
+    <div class="choices" id="choices"></div>
+
+    <div style="display:flex; gap:10px; margin-top:14px; flex-wrap:wrap;">
+      <button class="btn danger" id="clearPickBtn">Clear pick</button>
+    </div>
+  </div>
+</div>
+
+<footer>
+  Local-only votes + optional Google Sheets logging.
+</footer>
+
+<script>
+  // ===========================
+  // Google Sheets endpoint (optional)
+  // ===========================
+  const SHEETS_ENDPOINT = "PASTE_WEB_APP_URL_DI_SINI"; // optional
+
+  const KEY_CFG   = "fw_uiaw_config_v2";
+  const KEY_VOTES = "fw_uiaw_votes_v2";
+  const KEY_SESS  = "fw_uiaw_session_v1";
+
+  function getSessionId(){
+    let id = localStorage.getItem(KEY_SESS);
+    if(!id){
+      id = "sess_" + Math.random().toString(16).slice(2) + "_" + Date.now();
+      localStorage.setItem(KEY_SESS, id);
+    }
+    return id;
+  }
+
+  async function sendVoteToSheets({ cast, category }){
+    if(!SHEETS_ENDPOINT || SHEETS_ENDPOINT.includes("PASTE_WEB_APP_URL")) return;
+
+    const payload = {
+      session_id: getSessionId(),
+      page: location.href,
+      cast_id: cast.id,
+      cast_name: cast.name,
+      category_id: category.id,
+      category_name: category.name,
+      user_agent: navigator.userAgent
+    };
+
+    try{
+      await fetch(SHEETS_ENDPOINT, {
+        method: "POST",
+        headers: { "Content-Type":"application/json" },
+        body: JSON.stringify(payload)
+      });
+    }catch(e){
+      console.warn("Sheets logging failed:", e);
+    }
+  }
+
+  // ===========================
+  // Default data (no hints)
+  // ===========================
+  const DEFAULT = {
+    categories: [
+      { id:"baca_puisi",    name:"Baca Puisi" },
+      { id:"cipta_puisi",   name:"Cipta Puisi" },
+      { id:"baca_cerpen",   name:"Baca Cerpen" },
+      { id:"cipta_cerpen",  name:"Cipta Cerpen" },
+      { id:"komik",         name:"Komik" },
+      { id:"poster",        name:"Poster" },
+      { id:"lukis",         name:"Lukis" },
+      { id:"fotografi",     name:"Fotografi" },
+      { id:"film",          name:"Film Pendek" },
+      { id:"monolog",       name:"Monolog / Stand-up" },
+      { id:"band",          name:"Band" },
+      { id:"solo_vocal",    name:"Solo Vocal" },
+      { id:"vocal_group",   name:"Vocal Group" },
+      { id:"modern_dance",  name:"Modern Dance" },
+      { id:"tari_trad",     name:"Tari Tradisional" },
+    ],
+    cast: [
+      { id:"yuda",           name:"Yuda",   img:"images/yuda.jpg" },
+      { id:"shaka",          name:"Shaka",  img:"images/shaka.jpg" },
+      { id:"sufjan",         name:"Sufjan", img:"images/sufjan.jpg" },
+      { id:"jehan",          name:"Jehan",  img:"images/jehan.jpg" },
+      { id:"tehran",         name:"Tehran", img:"images/tehran.jpg" },
+      { id:"sagara",         name:"Sagara", img:"images/sagara.jpg" },
+      { id:"blok_m",         name:"Blok M (Jehan’s)", img:"images/blokm.jpg" },
+      { id:"kalkulus_lulus", name:"Kalkulus — Lulus (Yuda’s)", img:"images/kalkulus-lulus.jpg" },
+      { id:"kalkulus_a",     name:"Kalkulus A (Shaka’s)", img:"images/kalkulus-a.jpg" },
+      { id:"kki_support",    name:"KKI Support (Sagara’s)", img:"images/kki-support.jpg" },
+    ]
+  };
+
+  // ===========================
+  // Storage helpers
+  // ===========================
+  function loadVotes(){
+    try{ return JSON.parse(localStorage.getItem(KEY_VOTES)) || {}; }catch{ return {}; }
+  }
+  function saveVotes(v){
+    localStorage.setItem(KEY_VOTES, JSON.stringify(v));
+  }
+
+  function loadConfig(){
+    try{
+      const raw = localStorage.getItem(KEY_CFG);
+      if(!raw) return structuredClone(DEFAULT);
+      const cfg = JSON.parse(raw);
+      if(!cfg || !Array.isArray(cfg.categories) || !Array.isArray(cfg.cast)) throw new Error("bad cfg");
+      cfg.categories.forEach(c => { if(!c.id || !c.name) throw new Error("category needs id+name"); });
+      cfg.cast.forEach(c => { if(!c.id || !c.name) throw new Error("cast needs id+name"); });
+      return cfg;
+    }catch{
+      return structuredClone(DEFAULT);
+    }
+  }
+  function saveConfig(cfg){
+    localStorage.setItem(KEY_CFG, JSON.stringify(cfg, null, 2));
+  }
+
+  // ===========================
+  // App state
+  // ===========================
+  let CFG = loadConfig();
+  let VOTES = loadVotes();
+  let currentCastId = null;
+
+  // ===========================
+  // DOM
+  // ===========================
+  const castGrid = document.getElementById("castGrid");
+  const modal = document.getElementById("modal");
+  const modalTitle = document.getElementById("modalTitle");
+  const modalPick = document.getElementById("modalPick");
+  const choicesEl = document.getElementById("choices");
+
+  const kpiTotal = document.getElementById("kpiTotal");
+  const kpiTop = document.getElementById("kpiTop");
+  const kpiCast = document.getElementById("kpiCast");
+  const barList = document.getElementById("barList");
+  const myPicks = document.getElementById("myPicks");
+
+  const tabs = document.querySelectorAll(".tab");
+  const tabGuess = document.getElementById("tab-guess");
+  const tabResults = document.getElementById("tab-results");
+  const tabAdmin = document.getElementById("tab-admin");
+
+  // ===========================
+  // Helpers
+  // ===========================
+  function getCategoryById(id){ return CFG.categories.find(c => c.id === id); }
+  function getCastById(id){ return CFG.cast.find(c => c.id === id); }
+
+  function escapeHtml(s){
+    return String(s ?? "")
+      .replaceAll("&","&amp;")
+      .replaceAll("<","&lt;")
+      .replaceAll(">","&gt;")
+      .replaceAll('"',"&quot;")
+      .replaceAll("'","&#039;");
+  }
+
+  // ===========================
+  // Tabs
+  // ===========================
+  function setTab(name){
+    tabs.forEach(t => t.classList.toggle("active", t.dataset.tab === name));
+    tabGuess.style.display = name==="guess" ? "" : "none";
+    tabResults.style.display = name==="results" ? "" : "none";
+    tabAdmin.style.display = name==="admin" ? "" : "none";
+    if(name==="results") renderResults();
+    if(name==="admin") renderAdmin();
+  }
+  tabs.forEach(t => t.addEventListener("click", () => setTab(t.dataset.tab)));
+
+  // ===========================
+  // Render cast cards (image)
+  // ===========================
+  function renderCast(){
+    castGrid.innerHTML = "";
+    CFG.cast.forEach(c => {
+      const pickedId = VOTES[c.id];
+      const picked = pickedId ? getCategoryById(pickedId) : null;
+
+      const card = document.createElement("div");
+      card.className = "card cast";
+
+      const statusClass = picked ? "decided" : "guess";
+      const statusText = picked ? "DECIDED" : "GUESS";
+
+      card.innerHTML = `
+        <div class="cast-top">
+          <div class="name">${escapeHtml(c.name)}</div>
+          <div class="status ${statusClass}">${statusText}</div>
+        </div>
+
+        <div class="avatar">
+          ${
+            c.img
+              ? `<img src="${escapeHtml(c.img)}" alt="${escapeHtml(c.name)}"
+                   onerror="this.remove(); this.parentElement.innerHTML='<div class=\\'fallback\\'>Add image: <span class=\\'mono\\'>${escapeHtml(c.img)}</span></div>';">`
+              : `<div class="fallback">No image yet</div>`
+          }
+        </div>
+
+        <div class="pill">
+          <span>Current pick</span>
+          <strong>${picked ? escapeHtml(picked.name) : "—"}</strong>
+        </div>
+      `;
+
+      card.addEventListener("click", () => openModal(c.id));
+      castGrid.appendChild(card);
+    });
+  }
+
+  // ===========================
+  // Modal
+  // ===========================
+  function openModal(castId){
+    currentCastId = castId;
+    const c = getCastById(castId);
+    const pickedId = VOTES[castId];
+    const picked = pickedId ? getCategoryById(pickedId) : null;
+
+    modalTitle.textContent = c.name;
+    modalPick.textContent = "Current pick: " + (picked ? picked.name : "—");
+
+    choicesEl.innerHTML = "";
+    CFG.categories.forEach(cat => {
+      const div = document.createElement("div");
+      div.className = "choice";
+      div.textContent = cat.name;
+      div.addEventListener("click", async () => {
+        VOTES[castId] = cat.id;
+        saveVotes(VOTES);
+        renderCast();
+        openModal(castId);
+        await sendVoteToSheets({ cast: c, category: cat });
+      });
+      choicesEl.appendChild(div);
+    });
+
+    modal.classList.add("open");
+  }
+
+  function closeModal(){
+    modal.classList.remove("open");
+    currentCastId = null;
+  }
+
+  document.getElementById("closeModalBtn").addEventListener("click", closeModal);
+  modal.addEventListener("click", (e) => { if(e.target === modal) closeModal(); });
+
+  document.getElementById("clearPickBtn").addEventListener("click", () => {
+    if(!currentCastId) return;
+    delete VOTES[currentCastId];
+    saveVotes(VOTES);
+    renderCast();
+    openModal(currentCastId);
+  });
+
+  document.getElementById("resetVotesBtn").addEventListener("click", () => {
+    if(!confirm("Reset all your picks on this device?")) return;
+    VOTES = {};
+    saveVotes(VOTES);
+    renderCast();
+    renderResults();
+  });
+
+  // ===========================
+  // Results
+  // ===========================
+  function renderResults(){
+    const counts = {};
+    CFG.categories.forEach(c => counts[c.id] = 0);
+
+    let decided = 0;
+    Object.entries(VOTES).forEach(([castId, catId]) => {
+      if(counts[catId] !== undefined) counts[catId] += 1;
+      decided += 1;
+    });
+
+    kpiTotal.textContent = String(decided);
+
+    let topId = null, topVal = -1;
+    Object.entries(counts).forEach(([id,val]) => {
+      if(val > topVal){ topVal = val; topId = id; }
+    });
+    kpiTop.textContent = topVal > 0 ? getCategoryById(topId).name : "—";
+    kpiCast.textContent = decided > 0 ? `${decided} cast decided` : "—";
+
+    barList.innerHTML = "";
+    const max = Math.max(1, ...Object.values(counts));
+    CFG.categories
+      .map(c => ({...c, val: counts[c.id] || 0}))
+      .sort((a,b) => b.val - a.val)
+      .forEach(item => {
+        const pct = Math.round((item.val / max) * 100);
+        const bar = document.createElement("div");
+        bar.className = "bar";
+        bar.innerHTML = `
+          <div class="bar-top">
+            <div class="label">${escapeHtml(item.name)}</div>
+            <div class="val">${item.val} pick(s)</div>
+          </div>
+          <div class="track"><div class="fill" style="width:${pct}%;"></div></div>
+        `;
+        barList.appendChild(bar);
+      });
+
+    myPicks.innerHTML = "";
+    const list = document.createElement("div");
+    list.style.display = "flex";
+    list.style.flexDirection = "column";
+    list.style.gap = "10px";
+
+    CFG.cast.forEach(c => {
+      const pickedId = VOTES[c.id];
+      const picked = pickedId ? getCategoryById(pickedId) : null;
+      const row = document.createElement("div");
+      row.className = "bar";
+      row.innerHTML = `
+        <div class="bar-top">
+          <div class="label">${escapeHtml(c.name)}</div>
+          <div class="val">${picked ? escapeHtml(picked.name) : "—"}</div>
+        </div>
+      `;
+      list.appendChild(row);
+    });
+
+    myPicks.appendChild(list);
+  }
+
+  // ===========================
+  // Admin
+  // ===========================
+  const adminJson = document.getElementById("adminJson");
+
+  function renderAdmin(){
+    adminJson.value = JSON.stringify(CFG, null, 2);
+  }
+
+  document.getElementById("saveAdminBtn").addEventListener("click", () => {
+    try{
+      const parsed = JSON.parse(adminJson.value);
+      if(!parsed || !Array.isArray(parsed.categories) || !Array.isArray(parsed.cast)){
+        alert("JSON must include { categories: [...], cast: [...] }");
+        return;
+      }
+      parsed.categories.forEach(c => { if(!c.id || !c.name) throw new Error("each category needs id + name"); });
+      parsed.cast.forEach(c => { if(!c.id || !c.name) throw new Error("each cast needs id + name"); });
+
+      CFG = parsed;
+      saveConfig(CFG);
+      renderCast();
+      renderResults();
+      alert("Saved!");
+    }catch(err){
+      alert("Invalid JSON: " + err.message);
+    }
+  });
+
+  document.getElementById("loadDefaultBtn").addEventListener("click", () => {
+    CFG = structuredClone(DEFAULT);
+    saveConfig(CFG);
+    renderCast();
+    renderResults();
+    renderAdmin();
+    alert("Loaded default config.");
+  });
+
+  // ===========================
+  // Init
+  // ===========================
+  renderCast();
+</script>
+</body>
+</html>
